@@ -36,6 +36,7 @@ public:
             Columns(i);
         }
         Row();
+        cout << endl << setw(77) << "Rules: First type letter, then number; (Example: D5)\n\n";
     }
     void UpdateBoard(char letter, short number, char player) {
         wstring color = L"";
@@ -53,7 +54,7 @@ public:
         }
         wcout << L"\x1b[" << number * 2 + 3 << ";" << 32 + columnNumberByLetter[letter] * 4 << "H";
         wcout << color;
-        wcout << L"\x1b[21;0H\033[0m";
+        wcout << L"\x1b[24;0H\033[0m";
     }
     void Reversing(vector<pair<char, short>> flanks, char player) {
         for (auto tile : flanks) {
@@ -71,7 +72,7 @@ public:
         if (whitePoints > blackPoints) cout << "Winner is White disks player!\n";
         else if (whitePoints < blackPoints) cout << "Winner is Black disks player!\n";
         cout << "Black disks player points: " << blackPoints << endl;
-        cout << "White disks player points: " << whitePoints;
+        cout << "White disks player points: " << whitePoints << endl;
     }
     void CalculatePoints() {
         for (auto tile : boardInfo) {
@@ -140,13 +141,14 @@ public:
     bool IsGameEnding(char opponent) {
         if (isActionInCenter) return false;
         bool canFlank = false;
-
         for (auto tile : boardInfo) {
             if (tile.second == 'O') {
                 for (auto direction : directions) {
-                    canFlank = CanFlankOpponent(direction[0], direction[1], opponent, GetColumnNumber(tile.first.first), tile.first.second);
+                    CanFlankOpponent(direction[0], direction[1], opponent, GetColumnNumber(tile.first.first), tile.first.second);
+                    if (currentFlanks.size() > 0) {
+                        canFlank = true;
+                    }
                     currentFlanks.clear();
-                    flanks.clear();
                     if (canFlank) { 
                         return false; 
                     }
